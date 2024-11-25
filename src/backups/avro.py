@@ -1,3 +1,6 @@
+"""
+Сериализация через AVRO.
+"""
 import gzip
 import json
 

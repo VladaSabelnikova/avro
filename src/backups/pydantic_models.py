@@ -12,9 +12,9 @@ class UserItem(BaseModel):
 
 class OrderItem(BaseModel):
     id: str
-    user_id: str
-    user_name: str
-    user_surname: str
+    user_id: str | None
+    user_name: str | None
+    user_surname: str | None
     created_at: str | datetime = None
 
     @field_validator('created_at')

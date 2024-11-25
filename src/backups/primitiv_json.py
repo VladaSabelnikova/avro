@@ -1,3 +1,6 @@
+"""
+Сериализация через JSON.
+"""
 import json
 
 from time import perf_counter

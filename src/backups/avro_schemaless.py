@@ -1,3 +1,6 @@
+"""
+Сериализация через AVRO с отсутствующей схемой.
+"""
 import gzip
 import json
 from io import BytesIO

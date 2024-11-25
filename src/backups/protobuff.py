@@ -1,3 +1,8 @@
+"""
+Сериализация через protobuff.
+backup_item_pb2 нужно сначала было скомпилировать командой:
+protoc --python_out=. proto_files/backup_item.proto
+"""
 from src.backups.proto_files import backup_item_pb2
 
 from time import perf_counter

@@ -1,6 +1,8 @@
+"""
+Сериализация через JSON + ZIP (сейчас примерно так работает).
+"""
 import gzip
 import json
-from datetime import datetime
 from time import perf_counter
 from uuid import uuid4
 
