@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package backup_item;
+
+message BackupItem {
+
+  message PaymentSession {
+    string id = 1;
+    string user_id = 2;
+    string order_id = 3;
+    string title = 4;
+    int32 amount = 5;
+    string currency = 6;
+}
+  message Order {
+  string id = 1;
+  string user_id = 2;
+  string user_name = 3;
+  string user_surname = 4;
+  string created_at = 5;
+}
+  message User {
+    string id = 1;
+    string name = 2;
+    string surname = 3;
+  }
+
+  PaymentSession payment_session = 1;
+  Order order = 2;
+  User user = 3;
+}
