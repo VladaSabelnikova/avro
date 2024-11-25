@@ -126,6 +126,10 @@ def create_all_tables():
 
 
 def generate_records(quantity=10):
+    """
+    Хитрость в том, что мы сделаем много повторяющихся значений.
+    Имитируем большую связность между таблицами.
+    """
     for _ in range(quantity):
         new_user = User(id=str(uuid4()), name="Иван", surname="Иванов")
         new_order = Order(

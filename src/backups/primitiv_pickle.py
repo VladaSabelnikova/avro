@@ -1,13 +1,11 @@
+"""
+Сериализация через pickle.
+"""
 import gzip
 import json
 import pickle
-from datetime import datetime
-from io import BytesIO
 from time import perf_counter
 from uuid import uuid4
-
-import fastavro
-from pydantic import BaseModel, field_validator
 
 from src.backups.pydantic_models import UserItem, OrderItem, BackupItem
 from src.models import create_all_tables, generate_records, Order, session, User, BackupV1, SessionLocal
