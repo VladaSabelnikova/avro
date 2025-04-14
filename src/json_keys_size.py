@@ -1,15 +1,15 @@
 """
 Какой объём от общего кол-ва занимают ключи в JSON?
-Не все же поля будут заполнены, а это значит минимум 50% а то и больше.
+Не все же поля будут заполнены в реальной ситуации.
 Посмотрим худший вариант, когда у ключей все значения None.
 """
 import pickle
 
-from src.backups.pydantic_models import BackupItem
+from src.schemes_for_serialize import BackupItem
 
 
 def main():
-    backup_item = BackupItem(order=None, payment_session=None, user=None).model_dump()
+    backup_item = BackupItem(order=None, payment_session=None, user=None, bank_card=None).model_dump()
 
     keys = pickle.dumps([*backup_item.keys()])
     values = pickle.dumps([*backup_item.values()])

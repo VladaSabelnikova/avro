@@ -9,20 +9,38 @@ message BackupItem {
     string user_id = 2;
     string order_id = 3;
     string title = 4;
-    int32 amount = 5;
-    string currency = 6;
+    string user_name = 5;
+    string user_surname = 6;
+    string user_email_address = 7;
+    string user_phone_number = 8;
+    string bank_card_mask = 9;
+    string order_tariff = 10;
+    int32 order_amount = 11;
+    string order_currency = 12;
+    int32 order_refund_amount = 13;
+
 }
   message Order {
   string id = 1;
   string user_id = 2;
-  string user_name = 3;
-  string user_surname = 4;
-  string created_at = 5;
+  string bank_card_id = 3;
+  string payment_session_id = 4;
+  string tariff = 5;
+  int32 amount = 6;
+  string currency = 7;
+  int32 refund_amount = 8;
+  string meta_information_simple_number_1 = 9;
+  string human_is_all_too_human_coding_for_free_minds = 10;
+  string in_an_hour_of_unprecedented_heat = 11;
+  string i_am_part_of_that_force = 12;
+  string created_at = 13;
 }
   message User {
     string id = 1;
     string name = 2;
     string surname = 3;
+    string email_address = 4;
+    string phone_number = 5;
   }
 
   PaymentSession payment_session = 1;

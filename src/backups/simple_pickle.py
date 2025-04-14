@@ -1,21 +1,20 @@
 """
-Сериализация через JSON.
+Сериализация через pickle.
 """
-import json
-
+import pickle
 from time import perf_counter
 
 from src.backups.base import BackupProcessBase, COUNT_RECORDS
-from src.backups.pydantic_models import BackupItem
-from src.models import Order, session, User, BackupV1, create_all_tables, generate_records
+from src.schemes_for_serialize import BackupItem
+from src.models import create_all_tables, generate_records, Order, session, User, BackupV1, PaymentSession
 
 
-class BackupJson(BackupProcessBase):
+class BackupPickle(BackupProcessBase):
 
     def _serialize_data(self, backup_item: BackupItem) -> bytes:
         # Расчёт времени выполнения сериализации.
         start = perf_counter()
-        compress_data = json.dumps(backup_item.dict(), default=str).encode()
+        compress_data = pickle.dumps(backup_item.model_dump())
         self.total_execution_time += perf_counter() - start
 
         return compress_data
@@ -25,7 +24,7 @@ if __name__ == "__main__":
     create_all_tables()
     generate_records(COUNT_RECORDS)
 
-    backup_process = BackupJson(session)
+    backup_process = BackupPickle(session)
     backup_process.main()
 
     backup = session.query(BackupV1).first()
@@ -33,18 +32,13 @@ if __name__ == "__main__":
     assert backup
     assert not session.query(User).all()
     assert not session.query(Order).all()
-    print(f'BYTES json = {len(backup.compress_data)}')
-    print(f'TIME json = {backup_process.total_execution_time}')
+    assert not session.query(PaymentSession).all()
+    print(f'BYTES pickle = {len(backup.compress_data)}')
+    print(f'TIME pickle = {backup_process.total_execution_time}')
 
 
 # Замеры несколькими итерациями.
 """
-BYTES json = 417
-TIME json = 0.007674127984500956
-
-BYTES json = 417
-TIME json = 0.007634660985786468
-
-BYTES json = 417
-TIME json = 0.007488315990485717
+BYTES pickle = 1015
+TIME pickle = 0.01143019502342213
 """
