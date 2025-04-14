@@ -8,8 +8,8 @@
 from abc import ABC, abstractmethod
 from uuid import uuid4
 
-from src.backups.pydantic_models import UserItem, OrderItem, BackupItem
-from src.models import Order, User, SessionLocal, BackupV1
+from src.schemes_for_serialize import UserItem, OrderItem, PaymentSessionItem, BackupItem
+from src.models import Order, User, PaymentSession, SessionLocal, BackupV1
 
 COUNT_RECORDS = 100
 
@@ -30,10 +30,12 @@ class BackupProcessBase(ABC):
             for order in self._find_orders():
 
                 user = self._get_user_by_id(order.user_id)
+                payment_session = self._get_payment_session_by_id(order.payment_session_id)
+
                 backup_item = BackupItem(
                     user=UserItem(**user.as_dict()),
                     order=OrderItem(**order.as_dict()),
-                    payment_session=None
+                    payment_session=PaymentSessionItem(**payment_session.as_dict()),
                 )
                 self._save_backup(backup_item)
                 self._delete_data(backup_item)
@@ -42,13 +44,20 @@ class BackupProcessBase(ABC):
         except BaseException:
             self.db_session.rollback()
 
-    def _find_orders(self):
+    def _find_orders(self) -> list[Order]:
         return self.db_session.query(Order).all()
 
-    def _get_user_by_id(self, user_id: str):
+    def _get_user_by_id(self, user_id: str) -> User | None:
         return self.db_session.get(User, user_id)
 
-    def _delete_data(self, backup_item: BackupItem):
+    def _get_payment_session_by_id(self, payment_session_id: str) -> PaymentSession | None:
+        return self.db_session.get(PaymentSession, payment_session_id)
+
+    def _delete_data(self, backup_item: BackupItem) -> None:
+        self.db_session.query(PaymentSession).filter(
+            PaymentSession.id == backup_item.payment_session.id
+        ).delete()
+
         self.db_session.query(User).filter(
             User.id == backup_item.user.id
         ).delete()
@@ -57,7 +66,7 @@ class BackupProcessBase(ABC):
             Order.id == backup_item.order.id
         ).delete()
 
-    def _save_backup(self, backup_item: BackupItem):
+    def _save_backup(self, backup_item: BackupItem) -> None:
         compress_data = self._serialize_data(backup_item)
         backup = BackupV1(
             id=str(uuid4()),
